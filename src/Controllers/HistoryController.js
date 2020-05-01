@@ -22,7 +22,7 @@ module.exports = {
       const { userId } = req.headers;
       const equipmentId = req.params.id;
 
-      const calibration = Calibration.find({
+      const calibration = await Calibration.find({
         $and: [
           { idUser: userId },
           { idEquipment: equipmentId },

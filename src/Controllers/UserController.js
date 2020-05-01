@@ -17,21 +17,21 @@ module.exports = {
    *         description: Internal server error.
    */
   async show(req, res) {
-    try {
-      const user = User.findById(req.params.id);
+    await User.findOne({ _id: req.params.id }, (err, user) => {
+      try {
+        if (!user) {
+          return res.status(HttpStatus.BAD_REQUEST).json({
+            message: `User not found. Message: ${err} `,
+          });
+        }
 
-      if (!user) {
-        return res.status(HttpStatus.BAD_REQUEST).json({
-          message: 'User not found',
-        });
+        return res.status(HttpStatus.OK).json(user);
+      } catch (ex) {
+        return res
+          .status(ex.status)
+          .json({ message: `Error on delete. message ${ex.message}` });
       }
-
-      return res.status(HttpStatus.OK).json(user);
-    } catch (ex) {
-      return res
-        .status(ex.status)
-        .json({ message: `Error on delete. message ${ex.message}` });
-    }
+    });
   },
   /**
    * @swagger
@@ -88,36 +88,32 @@ module.exports = {
         .json({ message: 'Password property missing.' });
     }
 
-    let user = await User.findOne({ cpf });
+    await User.findOne({ cpf }, (err, user) => {
+      if (user) {
+        return res
+          .status(HttpStatus.NOT_ACCEPTABLE)
+          .json({ message: 'Cpf already exists.' });
+      }
+    });
 
-    if (user) {
-      return res
-        .status(HttpStatus.NOT_ACCEPTABLE)
-        .json({ message: 'Cpf already exists.' });
-    }
+    await User.findOne({ username }, (err, user) => {
+      if (user) {
+        return res
+          .status(HttpStatus.NOT_ACCEPTABLE)
+          .json({ message: 'Username already exists.' });
+      }
+    });
 
-    user = null;
-
-    user = await User.findOne({ username });
-
-    if (user) {
-      return res
-        .status(HttpStatus.NOT_ACCEPTABLE)
-        .json({ message: 'Username already exists.' });
-    }
-
-    user = null;
-
-    user = await User.findOne({ email });
-
-    if (user) {
-      return res
-        .status(HttpStatus.NOT_ACCEPTABLE)
-        .json({ message: 'Email already exists.' });
-    }
+    await User.findOne({ email }, (err, user) => {
+      if (user) {
+        return res
+          .status(HttpStatus.NOT_ACCEPTABLE)
+          .json({ message: 'Email already exists.' });
+      }
+    });
 
     try {
-      user = await User.create({
+      const user = await User.create({
         name, cpf, address, username, email, password, picture,
       });
 
@@ -143,50 +139,51 @@ module.exports = {
    *         description: Internal server error.
    */
   async update(req, res) {
-    const user = User.findById(req.params.id);
-    const { email } = req.body;
+    await User.findById(req.params.id, async (err, user) => {
+      const userCopy = user;
 
-    if (!user) {
-      return res
-        .status(HttpStatus.BAD_REQUEST)
-        .json({
-          message: 'User not found.',
-        });
-    }
-
-    if (email !== undefined || email !== '') {
-      const validationMail = User.findOne({ email });
-
-      if (validationMail) {
+      if (err) {
         return res
-          .status(HttpStatus.NOT_ACCEPTABLE)
-          .json({ message: 'Email already exists.' });
+          .status(HttpStatus.BAD_REQUEST)
+          .json({
+            message: 'User not found.',
+          });
+      }
+      const { email } = req.body;
+
+      if (email !== undefined || email !== '') {
+        const validationMail = User.findOne({ email });
+
+        if (validationMail) {
+          return res
+            .status(HttpStatus.NOT_ACCEPTABLE)
+            .json({ message: 'Email already exists.' });
+        }
+
+        userCopy.email = req.body.email;
       }
 
-      user.email = req.body.email;
-    }
+      if (req.body.name !== undefined || req.body.name !== '') {
+        userCopy.name = req.body.name;
+      }
 
-    if (req.body.name !== undefined || req.body.name !== '') {
-      user.name = req.body.name;
-    }
+      if (req.body.address !== undefined || req.body.address !== '') {
+        userCopy.address = req.body.address;
+      }
 
-    if (req.body.address !== undefined || req.body.address !== '') {
-      user.address = req.body.address;
-    }
+      if (req.body.picture !== undefined || req.body.picture !== '') {
+        userCopy.picture = req.body.picture;
+      }
+      try {
+        await userCopy.save();
 
-    if (req.body.picture !== undefined || req.body.picture !== '') {
-      user.picture = req.body.picture;
-    }
-
-    try {
-      await user.save();
-
-      return res.status(HttpStatus.OK).json(user);
-    } catch (ex) {
-      return res
-        .status(ex.status)
-        .json({ message: `Error on update. message ${ex.message}` });
-    }
+        return res.status(HttpStatus.OK).json(userCopy);
+      } catch (ex) {
+        return res
+          .status(ex.status)
+          .json({ message: `Error on update. message ${ex.message}` });
+      }
+    });
   },
   /**
    * @swagger
@@ -203,23 +200,23 @@ module.exports = {
    *         description: Internal server error.
    */
   async remove(req, res) {
-    try {
-      const user = User.findById(req.params.id);
+    await User.findById(req.params.id, async (err, user) => {
+      try {
+        if (err) {
+          return res.status(HttpStatus.BAD_REQUEST).json({
+            message: 'User not found',
+          });
+        }
+        const removedUser = user;
 
-      if (!user) {
-        return res.status(HttpStatus.BAD_REQUEST).json({
-          message: 'User not found',
-        });
+        await user.remove();
+
+        return res.status(HttpStatus.OK).json(removedUser);
+      } catch (ex) {
+        return res
+          .status(ex.status)
+          .json({ message: `Error on delete. message ${ex.message}` });
       }
-      const removedUser = user;
-
-      await user.remove();
-
-      return res.status(HttpStatus.OK).json(removedUser);
-    } catch (ex) {
-      return res
-        .status(ex.status)
-        .json({ message: `Error on delete. message ${ex.message}` });
-    }
+    });
   },
 };
