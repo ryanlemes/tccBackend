@@ -42,7 +42,7 @@ module.exports = {
   },
   /**
    * @swagger
-   * api/v1/equipment/{id}/calibration:
+   * api/v1/calibration/equipment/{id}:
    *   get:
    *     description: Return the last calibration with the user that
    *                  made the calibration on a specific equipment.
@@ -58,5 +58,36 @@ module.exports = {
    */
   async equipmentCalibration(req, res) {
     return res.status(HttpStatus.OK);
+  },
+  /**
+   * @swagger
+   * api/v1/calibration/:
+   *   post:
+   *     description: store a new calibration
+   *     tags: [History]
+   *     responses:
+   *       200:
+   *         description: returns a json with the stored calibration.
+   *       400:
+   *         description: Resquest params error.
+   *       500:
+   *         description: Internal server error.
+   */
+  async store(req, res) {
+    const {
+      idUser, idEquipment, value,
+    } = req.body;
+
+    try {
+      const calibration = await Calibration.create({
+        idUser, idEquipment, value,
+      });
+
+      return res.status(HttpStatus.OK).json(calibration);
+    } catch (ex) {
+      return res
+        .status(ex.status)
+        .json({ message: `Error on create. message ${ex.message}` });
+    }
   },
 };
