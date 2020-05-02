@@ -151,7 +151,7 @@ module.exports = {
       }
       const { email } = req.body;
 
-      if (email !== undefined || email !== '') {
+      if (email !== undefined && email !== '') {
         const validationMail = User.findOne({ email });
 
         if (validationMail) {
@@ -163,15 +163,15 @@ module.exports = {
         userCopy.email = req.body.email;
       }
 
-      if (req.body.name !== undefined || req.body.name !== '') {
+      if (req.body.name !== undefined && req.body.name !== '') {
         userCopy.name = req.body.name;
       }
 
-      if (req.body.address !== undefined || req.body.address !== '') {
+      if (req.body.address !== undefined && req.body.address !== '') {
         userCopy.address = req.body.address;
       }
 
-      if (req.body.picture !== undefined || req.body.picture !== '') {
+      if (req.body.picture !== undefined && req.body.picture !== '') {
         userCopy.picture = req.body.picture;
       }
       try {
