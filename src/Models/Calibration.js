@@ -1,7 +1,7 @@
 const mongoose = require('mongoose');
 
 const CalibrationSchema = new mongoose.Schema({
-  valor: Number,
+  value: String,
   idUser: {
     type: mongoose.Schema.Types.ObjectId,
     ref: 'User',
