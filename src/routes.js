@@ -5,6 +5,7 @@ const userController = require('./Controllers/UserController');
 const historyController = require('./Controllers/HistoryController');
 const statisticController = require('./Controllers/StatisticController');
 const authController = require('./Controllers/AuthController');
+const equipmentController = require('./Controllers/EquipmentController');
 
 const routes = express.Router();
 
@@ -22,11 +23,18 @@ routes.group('/api/v1', (router) => {
     groupRoute.get('/:id/calibration', historyController.lastUserCalibration);
   });
 
+  router.group('/calibration', (groupRoute) => {
+    groupRoute.post('/', historyController.store);
+    groupRoute.get('/equipment/:id', historyController.equipmentCalibration);
+  });
+
+  router.group('/equipment', (groupRoute) => {
+    groupRoute.post('/', equipmentController.store);
+  });
+
   router.group('/statistic', (groupRoute) => {
     groupRoute.get('/dailycalibration/:id', statisticController.dailyCalibration);
   });
-
-  router.get('/equipment/:id/calibration', historyController.equipmentCalibration);
 });
 
 module.exports = routes;
