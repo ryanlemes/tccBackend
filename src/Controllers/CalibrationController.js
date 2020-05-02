@@ -4,10 +4,10 @@ const Calibration = require('../Models/Calibration');
 module.exports = {
   /**
    * @swagger
-   * api/v1/user/calibration/{id}:
+   * api/v1/calibration/user/{id}:
    *   get:
    *     description: Return the last user calibration on a specific equipment.
-   *     tags: [History]
+   *     tags: [Calibration]
    *     responses:
    *       200:
    *         description: a json with the last user application
@@ -19,21 +19,21 @@ module.exports = {
    */
   async lastUserCalibration(req, res) {
     try {
-      const { userId } = req.headers;
+      const { userid } = req.headers;
       const equipmentId = req.params.id;
 
       const calibration = await Calibration.find({
         $and: [
-          { idUser: userId },
+          { idUser: userid },
           { idEquipment: equipmentId },
         ],
-      });
+      }).sort('-createdAt');
 
       if (!calibration) {
-        return res.status(HttpStatus.OK).json({});
+        return res.status(HttpStatus.OK).json({ message: 'Hasnt any itens.' });
       }
 
-      return res.status(HttpStatus.OK).json(calibration);
+      return res.status(HttpStatus.OK).json(calibration[0]);
     } catch (ex) {
       return res
         .status(ex.status)
@@ -46,7 +46,7 @@ module.exports = {
    *   get:
    *     description: Return the last calibration with the user that
    *                  made the calibration on a specific equipment.
-   *     tags: [History]
+   *     tags: [Calibration]
    *     responses:
    *       200:
    *         description: returns a jsonthe last calibration date
@@ -57,14 +57,32 @@ module.exports = {
    *         description: Internal server error.
    */
   async equipmentCalibration(req, res) {
-    return res.status(HttpStatus.OK);
+    try {
+      const idEquipment = req.params.id;
+
+      const calibration = await Calibration.find({ idEquipment }).sort('-createdAt');
+
+      if (!calibration) {
+        return res
+          .status(HttpStatus.OK)
+          .json({ message: 'Hasnt any itens.' });
+      }
+
+      return res
+        .status(HttpStatus.OK)
+        .json(calibration[0]);
+    } catch (ex) {
+      return res
+        .status(ex.status)
+        .json({ message: `Error on delete. message ${ex.message}` });
+    }
   },
   /**
    * @swagger
    * api/v1/calibration/:
    *   post:
    *     description: store a new calibration
-   *     tags: [History]
+   *     tags: [Calibration]
    *     responses:
    *       200:
    *         description: returns a json with the stored calibration.
