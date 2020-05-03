@@ -1,4 +1,5 @@
 const HttpStatus = require('http-status-codes');
+const Calibration = require('../Models/Calibration');
 
 module.exports = {
   /**
@@ -16,6 +17,16 @@ module.exports = {
      *         description: Internal server error.
      */
   async dailyCalibration(req, res) {
-    return res.status(HttpStatus.OK);
+    const lastMonth = new Date();
+    lastMonth.setDate(lastMonth.getDate() - 30);
+
+    const calibration = await Calibration
+      .find({ createdAt: { $gt: lastMonth } }, 'createdAt');
+
+    const datenow = calibration.map((e) => {
+      const date = new Date(e.createdAt);
+      return date.getMonth();
+    }).reduce((prev, curr) => (prev[curr] = ++prev[curr] || 1, prev), {});
+    return res.json(datenow);
   },
 };
