@@ -1,4 +1,5 @@
 const HttpStatus = require('http-status-codes');
+const Moment = require('moment');
 const Calibration = require('../Models/Calibration');
 
 module.exports = {
@@ -17,16 +18,30 @@ module.exports = {
      *         description: Internal server error.
      */
   async dailyCalibration(req, res) {
+    const idUser = req.params.id;
     const lastMonth = new Date();
+
     lastMonth.setDate(lastMonth.getDate() - 30);
 
-    const calibration = await Calibration
-      .find({ createdAt: { $gt: lastMonth } }, 'createdAt');
+    await Calibration
+      .find({
+        $and: [
+          { idUser },
+          { createdAt: { $gt: lastMonth } },
+        ],
+      }, 'createdAt', (err, calibration) => {
+        if (err) {
+          return res
+            .status(HttpStatus.NOT_FOUND)
+            .json({ message: 'Data calibration not found for that user.' });
+        }
 
-    const datenow = calibration.map((e) => {
-      const date = new Date(e.createdAt);
-      return date.getMonth();
-    }).reduce((prev, curr) => (prev[curr] = ++prev[curr] || 1, prev), {});
-    return res.json(datenow);
+        const countDates = calibration.map((e) => Moment(e.createdAt).get('date'))
+          .reduce((prev, curr) => (prev[curr] = ++prev[curr] || 1, prev), {});
+
+        return res
+          .status(HttpStatus.OK)
+          .json(countDates);
+      });
   },
 };
