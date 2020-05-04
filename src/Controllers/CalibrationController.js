@@ -62,6 +62,10 @@ module.exports = {
    *     description: Return the last calibration with the user that
    *                  made the calibration on a specific equipment.
    *     tags: [Calibration]
+   *     security:
+   *      - bearerAuth: []
+   *     consumes:
+   *      - application/json
    *     produces:
    *      - application/json
    *     parameters:
