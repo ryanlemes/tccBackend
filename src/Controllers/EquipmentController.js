@@ -4,7 +4,7 @@ const Equipment = require('../Models/Equipment');
 module.exports = {
   /**
    * @swagger
-   * api/v1/equipment/:
+   * /api/v1/equipment/:
    *   post:
    *     description: store a new Equipment
    *     tags: [Equipment]

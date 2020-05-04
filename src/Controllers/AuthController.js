@@ -11,6 +11,8 @@ module.exports = {
     *   post:
     *     description: Realize the user's login
     *     tags: [Authorization]
+    *     consumes:
+    *      - application/json
     *     produces:
     *      - application/json
     *     parameters:

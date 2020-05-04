@@ -4,10 +4,14 @@ const Calibration = require('../Models/Calibration');
 module.exports = {
   /**
    * @swagger
-   * api/v1/calibration/user/equipment/{id}:
+   * /api/v1/calibration/user/equipment/{id}:
    *   get:
    *     description: Return the last user calibration on a specific equipment.
    *     tags: [Calibration]
+   *     security:
+   *      - bearerAuth: []
+   *     consumes:
+   *      - application/json
    *     produces:
    *      - application/json
    *     parameters:
@@ -53,7 +57,7 @@ module.exports = {
   },
   /**
    * @swagger
-   * api/v1/calibration/equipment/{id}:
+   * /api/v1/calibration/equipment/{id}:
    *   get:
    *     description: Return the last calibration with the user that
    *                  made the calibration on a specific equipment.
@@ -101,7 +105,7 @@ module.exports = {
   },
   /**
    * @swagger
-   * api/v1/calibration/:
+   * /api/v1/calibration/:
    *   post:
    *     description: store a new calibration
    *     tags: [Calibration]

@@ -5,10 +5,16 @@ const Calibration = require('../Models/Calibration');
 module.exports = {
   /**
      * @swagger
-     * api/v1/statistic/dailycalibration/:
+     * /api/v1/statistic/dailycalibration/:
      *   get:
      *     description: Return the daily calibration for some user.
      *     tags: [Statistics]
+     *     security:
+     *      - bearerAuth: []
+     *     consumes:
+     *      - application/json
+     *     produces:
+     *      - application/json
      *     responses:
      *       200:
      *         description: a json with the daily calibration.

@@ -6,22 +6,28 @@ const User = require('../Models/User');
 
 module.exports = {
   /**
-   * @swagger
-   * api/v1/user/:
-   *   get:
-   *     description: Show's the User profile
-   *     tags: [User]
-   *     responses:
-   *       200:
-   *         description: returns the user profile
-   *         schema:
-   *           type: object
-   *           $ref: '#/definitions/responseUser'
-   *       400:
-   *         description: Resquest params error.
-   *       500:
-   *         description: Internal server error.
-   */
+    * @swagger
+    * /api/v1/user/:
+    *   get:
+    *     description: Show's the User profile
+    *     tags: [User]
+    *     security:
+    *      - bearerAuth: []
+    *     consumes:
+    *      - application/json
+    *     produces:
+    *      - application/json
+    *     responses:
+    *       200:
+    *         description: returns the user profile
+    *         schema:
+    *           type: object
+    *           $ref: '#/definitions/responseUser'
+    *       400:
+    *         description: Resquest params error.
+    *       500:
+    *         description: Internal server error.
+    */
   async show(req, res) {
     await User.findOne({ _id: req.userId }, (err, user) => {
       try {
@@ -41,7 +47,7 @@ module.exports = {
   },
   /**
   * @swagger
-  * api/v1/user/:
+  * /api/v1/user/:
   *   post:
   *     description: Create a new user
   *     tags: [User]
@@ -151,10 +157,14 @@ module.exports = {
   },
   /**
   * @swagger
-  * api/v1/user/:
+  * /api/v1/user/:
   *   put:
   *     description: Update the user information
   *     tags: [User]
+  *     security:
+  *      - bearerAuth: []
+  *     consumes:
+  *      - application/json
   *     produces:
   *      - application/json
   *     parameters:
@@ -225,10 +235,16 @@ module.exports = {
   },
   /**
    * @swagger
-   * api/v1/user/:
+   * /api/v1/user/:
    *   delete:
    *     description: Remove user from database
    *     tags: [User]
+   *     security:
+   *      - bearerAuth: []
+   *     consumes:
+   *      - application/json
+   *     produces:
+   *      - application/json
    *     responses:
    *       200:
    *         description: returns a information of the removed user.
