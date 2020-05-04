@@ -6,6 +6,7 @@ const calibrationController = require('./Controllers/CalibrationController');
 const statisticController = require('./Controllers/StatisticController');
 const authController = require('./Controllers/AuthController');
 const equipmentController = require('./Controllers/EquipmentController');
+const authMiddleware = require('./Middlewares/auth');
 
 const routes = express.Router();
 
@@ -15,16 +16,16 @@ routes.group('/api/v1', (router) => {
   router.post('/login', authController.login);
 
   router.group('/user', (groupRoute) => {
-    groupRoute.get('/:id', userController.show);
+    groupRoute.get('/', authMiddleware, userController.show);
     groupRoute.post('/', userController.store);
-    groupRoute.put('/:id', userController.update);
-    groupRoute.delete('/:id', userController.remove);
+    groupRoute.put('/', authMiddleware, userController.update);
+    groupRoute.delete('/', authMiddleware, userController.remove);
   });
 
   router.group('/calibration', (groupRoute) => {
     groupRoute.post('/', calibrationController.store);
-    groupRoute.get('/user/:id', calibrationController.lastUserCalibration);
-    groupRoute.get('/equipment/:id', calibrationController.equipmentCalibration);
+    groupRoute.get('/user/equipment/:id', authMiddleware, calibrationController.lastUserCalibration);
+    groupRoute.get('/equipment/:id', authMiddleware, calibrationController.equipmentCalibration);
   });
 
   router.group('/equipment', (groupRoute) => {
@@ -32,7 +33,7 @@ routes.group('/api/v1', (router) => {
   });
 
   router.group('/statistic', (groupRoute) => {
-    groupRoute.get('/dailycalibration/:id', statisticController.dailyCalibration);
+    groupRoute.get('/dailycalibration/:id', authMiddleware, statisticController.dailyCalibration);
   });
 });
 
