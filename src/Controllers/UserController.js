@@ -14,6 +14,9 @@ module.exports = {
    *     responses:
    *       200:
    *         description: returns the user profile
+   *         schema:
+   *           type: object
+   *           $ref: '#/definitions/responseUser'
    *       400:
    *         description: Resquest params error.
    *       500:
@@ -37,19 +40,32 @@ module.exports = {
     });
   },
   /**
-   * @swagger
-   * api/v1/user/:
-   *   post:
-   *     description: Create a new user
-   *     tags: [User]
-   *     responses:
-   *       201:
-   *         description: returns a created user
-   *       400:
-   *         description: Resquest params error.
-   *       500:
-   *         description: Internal server error.
-   */
+  * @swagger
+  * api/v1/user/:
+  *   post:
+  *     description: Create a new user
+  *     tags: [User]
+  *     produces:
+  *      - application/json
+  *     parameters:
+  *       - name: user
+  *         description: User object
+  *         in:  body
+  *         required: true
+  *         type: string
+  *         schema:
+  *           $ref: '#/definitions/postUser'
+  *     responses:
+  *       201:
+  *         description: returns a created user
+  *         schema:
+  *           type: object
+  *           $ref: '#/definitions/responseUserToken'
+  *       400:
+  *         description: Resquest params error.
+  *       500:
+  *         description: Internal server error.
+  */
   async store(req, res) {
     const {
       name, cpf, address, username, email, password, picture,
@@ -134,19 +150,32 @@ module.exports = {
     }
   },
   /**
-   * @swagger
-   * api/v1/user/{id}:
-   *   put:
-   *     description: Update the user information
-   *     tags: [User]
-   *     responses:
-   *       200:
-   *         description: returns the user information updated.
-   *       400:
-   *         description: Resquest params error.
-   *       500:
-   *         description: Internal server error.
-   */
+  * @swagger
+  * api/v1/user/:
+  *   put:
+  *     description: Update the user information
+  *     tags: [User]
+  *     produces:
+  *      - application/json
+  *     parameters:
+  *       - name: user
+  *         description: User object
+  *         in:  body
+  *         required: true
+  *         type: string
+  *         schema:
+  *           $ref: '#/definitions/postUser'
+  *     responses:
+  *       200:
+  *         description: returns the user information updated.
+  *         schema:
+  *           type: object
+  *           $ref: '#/definitions/responseUser'
+  *       400:
+  *         description: Resquest params error.
+  *       500:
+  *         description: Internal server error.
+  */
   async update(req, res) {
     await User.findById(req.userId, async (err, user) => {
       const userCopy = user;
@@ -196,13 +225,16 @@ module.exports = {
   },
   /**
    * @swagger
-   * api/v1/user/{id}:
+   * api/v1/user/:
    *   delete:
    *     description: Remove user from database
    *     tags: [User]
    *     responses:
    *       200:
-   *         description: returns a information if the user was deleted.
+   *         description: returns a information of the removed user.
+   *         schema:
+   *           type: object
+   *           $ref: '#/definitions/responseUser'
    *       400:
    *         description: Resquest params error.
    *       500:

@@ -5,7 +5,7 @@ const Calibration = require('../Models/Calibration');
 module.exports = {
   /**
      * @swagger
-     * api/v1/statistic/dailycalibration/{id}:
+     * api/v1/statistic/dailycalibration/:
      *   get:
      *     description: Return the daily calibration for some user.
      *     tags: [Statistics]
@@ -18,7 +18,7 @@ module.exports = {
      *         description: Internal server error.
      */
   async dailyCalibration(req, res) {
-    const idUser = req.params.id;
+    const idUser = req.userId;
     const lastMonth = new Date();
 
     lastMonth.setDate(lastMonth.getDate() - 30);

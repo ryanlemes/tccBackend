@@ -8,9 +8,22 @@ module.exports = {
    *   post:
    *     description: store a new Equipment
    *     tags: [Equipment]
+   *     produces:
+   *      - application/json
+   *     parameters:
+   *       - name: equipment
+   *         description: equipment object
+   *         in:  body
+   *         required: true
+   *         type: string
+   *         schema:
+   *           $ref: '#/definitions/equipment'
    *     responses:
-   *       200:
+   *       201:
    *         description: returns a json with the stored Equipment.
+   *         schema:
+   *           type: object
+   *           $ref: '#/definitions/responseEquipment'
    *       400:
    *         description: Resquest params error.
    *       500:
@@ -26,7 +39,7 @@ module.exports = {
         name, defaultCalibration,
       });
 
-      return res.status(HttpStatus.OK).json(equipment);
+      return res.status(HttpStatus.CREATED).json(equipment);
     } catch (ex) {
       return res
         .status(ex.status)

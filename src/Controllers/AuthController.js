@@ -6,19 +6,32 @@ const User = require('../Models/User');
 
 module.exports = {
   /**
-   * @swagger
-   * api/v1/login:
-   *   post:
-   *     description: Realize the user's login
-   *     tags: [Authorization]
-   *     responses:
-   *       200:
-   *         description: returns the with a valid token
-   *       400:
-   *         description: Resquest params error.
-   *       500:
-   *         description: Internal server error.
-   */
+    * @swagger
+    * /api/v1/login/:
+    *   post:
+    *     description: Realize the user's login
+    *     tags: [Authorization]
+    *     produces:
+    *      - application/json
+    *     parameters:
+    *       - name: Login
+    *         description: User object
+    *         in:  body
+    *         required: true
+    *         type: string
+    *         schema:
+    *           $ref: '#/definitions/loginUser'
+    *     responses:
+    *       200:
+    *         description: Login user with the valid token.
+    *         schema:
+    *           type: object
+    *           $ref: '#/definitions/responseUserToken'
+    *       400:
+    *         description: Resquest params error.
+    *       500:
+    *         description: Internal server error.
+    */
   async login(req, res) {
     const { username, password } = req.body;
 

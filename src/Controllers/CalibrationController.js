@@ -8,10 +8,21 @@ module.exports = {
    *   get:
    *     description: Return the last user calibration on a specific equipment.
    *     tags: [Calibration]
+   *     produces:
+   *      - application/json
+   *     parameters:
+   *       - name: id
+   *         description: Equipment id
+   *         in:  query
+   *         required: true
+   *         type: number
    *     responses:
    *       200:
    *         description: a json with the last user application
    *                      access date.
+   *         schema:
+   *           type: object
+   *           $ref: '#/definitions/responseCalibration'
    *       400:
    *         description: Resquest params error.
    *       500:
@@ -47,10 +58,21 @@ module.exports = {
    *     description: Return the last calibration with the user that
    *                  made the calibration on a specific equipment.
    *     tags: [Calibration]
+   *     produces:
+   *      - application/json
+   *     parameters:
+   *       - name: id
+   *         description: Equipment id
+   *         in:  query
+   *         required: true
+   *         type: number
    *     responses:
    *       200:
-   *         description: returns a jsonthe last calibration date
-   *                      and the user.
+   *         description: returns a json with the last calibration date
+   *                      and his user id.
+   *         schema:
+   *           type: object
+   *           $ref: '#/definitions/responseCalibration'
    *       400:
    *         description: Resquest params error.
    *       500:
@@ -83,9 +105,22 @@ module.exports = {
    *   post:
    *     description: store a new calibration
    *     tags: [Calibration]
+   *     produces:
+   *      - application/json
+   *     parameters:
+   *       - name: Calibration
+   *         description: calibration object
+   *         in:  body
+   *         required: true
+   *         type: string
+   *         schema:
+   *           $ref: '#/definitions/calibration'
    *     responses:
-   *       200:
+   *       201:
    *         description: returns a json with the stored calibration.
+   *         schema:
+   *           type: object
+   *           $ref: '#/definitions/responseCalibration'
    *       400:
    *         description: Resquest params error.
    *       500:
@@ -101,7 +136,7 @@ module.exports = {
         idUser, idEquipment, value,
       });
 
-      return res.status(HttpStatus.OK).json(calibration);
+      return res.status(HttpStatus.CREATED).json(calibration);
     } catch (ex) {
       return res
         .status(ex.status)

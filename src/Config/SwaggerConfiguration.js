@@ -12,7 +12,7 @@ const swaggerOptions = {
       version: '1.0.0',
     },
   },
-  apis: ['./src/Controllers/*.js'],
+  apis: ['./src/Controllers/*.js', './src/Models/*.js'],
 };
 
 
