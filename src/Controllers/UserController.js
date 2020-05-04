@@ -1,10 +1,13 @@
 const HttpStatus = require('http-status-codes');
+const Bcrypt = require('bcrypt');
+
+const generateToken = require('../Config/Authentication');
 const User = require('../Models/User');
 
 module.exports = {
   /**
    * @swagger
-   * api/v1/user/{id}:
+   * api/v1/user/:
    *   get:
    *     description: Show's the User profile
    *     tags: [User]
@@ -17,7 +20,7 @@ module.exports = {
    *         description: Internal server error.
    */
   async show(req, res) {
-    await User.findOne({ _id: req.params.id }, (err, user) => {
+    await User.findOne({ _id: req.userId }, (err, user) => {
       try {
         if (!user) {
           return res.status(HttpStatus.BAD_REQUEST).json({
@@ -113,11 +116,17 @@ module.exports = {
     });
 
     try {
+      const hash = await Bcrypt.hash(password, 10);
+
       const user = await User.create({
-        name, cpf, address, username, email, password, picture,
+        name, cpf, address, username, email, password: hash, picture,
       });
 
-      return res.status(HttpStatus.OK).json(user);
+      user.password = undefined;
+
+      return res
+        .status(HttpStatus.OK)
+        .json({ user, token: generateToken({ id: user.id }) });
     } catch (ex) {
       return res
         .status(ex.status)
@@ -139,7 +148,7 @@ module.exports = {
    *         description: Internal server error.
    */
   async update(req, res) {
-    await User.findById(req.params.id, async (err, user) => {
+    await User.findById(req.userId, async (err, user) => {
       const userCopy = user;
 
       if (err) {
@@ -200,7 +209,7 @@ module.exports = {
    *         description: Internal server error.
    */
   async remove(req, res) {
-    await User.findById(req.params.id, async (err, user) => {
+    await User.findById(req.userId, async (err, user) => {
       try {
         if (err) {
           return res.status(HttpStatus.BAD_REQUEST).json({
