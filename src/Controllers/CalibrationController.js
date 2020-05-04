@@ -4,7 +4,7 @@ const Calibration = require('../Models/Calibration');
 module.exports = {
   /**
    * @swagger
-   * api/v1/calibration/user/{id}:
+   * api/v1/calibration/user/equipment/{id}:
    *   get:
    *     description: Return the last user calibration on a specific equipment.
    *     tags: [Calibration]
@@ -19,7 +19,7 @@ module.exports = {
    */
   async lastUserCalibration(req, res) {
     try {
-      const { userid } = req.headers;
+      const { userid } = req;
       const equipmentId = req.params.id;
 
       const calibration = await Calibration.find({
