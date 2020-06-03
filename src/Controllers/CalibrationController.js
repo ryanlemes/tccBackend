@@ -34,15 +34,15 @@ module.exports = {
    */
   async lastUserCalibration(req, res) {
     try {
-      const { userid } = req;
+      const { userId } = req;
       const equipmentId = req.params.id;
 
       const calibration = await Calibration.find({
         $and: [
-          { idUser: userid },
+          { idUser: userId },
           { idEquipment: equipmentId },
         ],
-      }).sort('-createdAt');
+      }).populate('idUser').sort('-createdAt');
 
       if (!calibration) {
         return res.status(HttpStatus.OK).json({ message: 'Hasnt any itens.' });
