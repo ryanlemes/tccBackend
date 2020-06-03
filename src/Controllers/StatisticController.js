@@ -41,8 +41,7 @@ module.exports = {
             .status(HttpStatus.NOT_FOUND)
             .json({ message: 'Data calibration not found for that user.' });
         }
-
-        const countDates = calibration.map((e) => Moment(e.createdAt).get('date'))
+        const countDates = calibration.map((e) => Moment(e.createdAt).format('DD-MM-YYYY'))
           .reduce((prev, curr) => (prev[curr] = ++prev[curr] || 1, prev), {});
 
         return res

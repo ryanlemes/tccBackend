@@ -140,8 +140,22 @@ module.exports = {
     try {
       const hash = await Bcrypt.hash(password, 10);
 
+      let realPic = '';
+
+      if (picture === undefined) {
+        realPic = 'image.jpg';
+      } else {
+        realPic = picture;
+      }
+
       const user = await User.create({
-        name, cpf, address, username, email, password: hash, picture,
+        name,
+        cpf,
+        address,
+        username,
+        email,
+        password: hash,
+        realPic,
       });
 
       user.password = undefined;

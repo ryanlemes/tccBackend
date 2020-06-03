@@ -33,7 +33,7 @@ routes.group('/api/v1', (router) => {
   });
 
   router.group('/statistic', (groupRoute) => {
-    groupRoute.get('/dailycalibration/:id', authMiddleware, statisticController.dailyCalibration);
+    groupRoute.get('/dailycalibration/', authMiddleware, statisticController.dailyCalibration);
   });
 });
 
