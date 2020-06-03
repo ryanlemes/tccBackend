@@ -222,6 +222,11 @@ module.exports = {
       if (req.body.picture !== undefined && req.body.picture !== '') {
         userCopy.picture = req.body.picture;
       }
+
+      if (req.body.lastAccess !== undefined && req.body.lastAccess !== '') {
+        userCopy.lastAccess = req.body.lastAccess;
+      }
+
       try {
         await userCopy.save();
 
